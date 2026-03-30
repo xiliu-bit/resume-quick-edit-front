@@ -1,0 +1,24 @@
+{
+  "name": "resume-quick-edit",
+  "version": "1.0.0",
+  "description": "简历快编 - 在线简历编辑与导出平台",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "element-plus": "^2.13.6",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
+    "pinia": "^2.3.1",
+    "vue": "^3.5.31",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.6.2",
+    "sass": "^1.98.0",
+    "vite": "^5.4.21"
+  }
+}

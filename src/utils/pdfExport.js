@@ -1,80 +1,152 @@
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
+/**
+ * PDF导出工具函数 (兼容层)
+ * 为了保持向后兼容性，保留原有的导出接口
+ * 内部调用新的pdfmake生成器
+ */
+
+import { generateResumePDF, pdfGenerator } from './pdf-generator'
+import { useResumeStore } from '../stores/resumeStore'
 
 /**
- * 将 HTML 元素导出为 PDF 文件
- * @param {HTMLElement} element - 要导出的 HTML 元素
+ * 原有的exportToPDF函数 - 现在作为兼容层
+ * @param {HTMLElement} element - 要导出的HTML元素（此参数在新版本中不再使用）
  * @param {string} filename - 导出的文件名
  */
 export const exportToPDF = async (element, filename = 'resume.pdf') => {
   try {
-    // 配置 html2canvas 选项
-    const canvas = await html2canvas(element, {
-      scale: 2, // 提高清晰度
-      useCORS: true, // 允许跨域图片
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      width: element.scrollWidth,
-      height: element.scrollHeight
+    console.log('📄 使用pdfmake生成文本型PDF...')
+
+    // 获取简历数据
+    const resumeStore = useResumeStore()
+
+    // 使用新的pdfmake生成器
+    const result = await generateResumePDF(resumeStore, {
+      title: filename.replace('.pdf', ''),
+      author: resumeStore.personalInfo.name || '简历快编用户'
     })
 
-    // 获取图片数据
-    const imgData = canvas.toDataURL('image/png')
-
-    // 计算 PDF 尺寸（A4）
-    const imgWidth = 210 // A4 宽度（mm）
-    const pageHeight = 297 // A4 高度（mm）
-    const imgHeight = (canvas.height * imgWidth) / canvas.width
-    let heightLeft = imgHeight
-
-    // 创建 PDF
-    const pdf = new jsPDF('p', 'mm', 'a4')
-    let position = 0
-
-    // 添加第一页
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-    heightLeft -= pageHeight
-
-    // 如果内容超过一页，添加新页面
-    while (heightLeft >= 0) {
-      position = heightLeft - imgHeight
-      pdf.addPage()
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-      heightLeft -= pageHeight
+    if (result.success && result.generator) {
+      // 下载PDF
+      result.generator.download(filename)
+      console.log('✅ 文本型PDF导出成功')
+      return true
+    } else {
+      throw new Error(result.error || 'PDF生成失败')
     }
 
-    // 下载 PDF
-    pdf.save(filename)
-
-    return true
   } catch (error) {
-    console.error('PDF 导出失败:', error)
-    throw new Error('PDF 导出失败，请重试')
+    console.error('❌ PDF导出失败:', error)
+    throw new Error('PDF导出失败: ' + error.message)
   }
 }
 
 /**
- * 优化简历预览区域的样式以便 PDF 导出
+ * 新的PDF导出函数 - 推荐使用
+ */
+export const exportResumeAsPDF = async (options = {}) => {
+  try {
+    const resumeStore = useResumeStore()
+
+    const result = await generateResumePDF(resumeStore, {
+      title: options.filename || '简历',
+      author: resumeStore.personalInfo.name || '简历快编用户',
+      ...options
+    })
+
+    if (result.success && result.generator) {
+      const filename = options.filename || '简历.pdf'
+      result.generator.download(filename)
+      return { success: true, filename }
+    } else {
+      throw new Error(result.error || 'PDF生成失败')
+    }
+
+  } catch (error) {
+    console.error('❌ 简历PDF导出失败:', error)
+    throw error
+  }
+}
+
+/**
+ * 带进度提示的PDF导出
+ */
+export const exportResumeWithProgress = async (onProgress, options = {}) => {
+  try {
+    const resumeStore = useResumeStore()
+
+    // 开始生成PDF
+    onProgress({ stage: 'generating', progress: 10, message: '开始生成PDF...' })
+
+    const pdfDocGenerator = await pdfGenerator.generatePDFWithProgress(
+      resumeStore,
+      options,
+      (progressData) => {
+        // 调整进度：从10%开始到100%
+        const adjustedProgress = 10 + Math.floor((progressData.progress * 0.9))
+        onProgress({
+          ...progressData,
+          progress: adjustedProgress,
+          message: progressData.message
+        })
+      }
+    )
+
+    if (pdfDocGenerator) {
+      const filename = options.filename || '简历.pdf'
+      pdfDocGenerator.download(filename)
+      onProgress({ stage: 'completed', progress: 100, message: 'PDF生成完成' })
+      return { success: true, filename }
+    } else {
+      throw new Error('PDF生成器创建失败')
+    }
+
+  } catch (error) {
+    console.error('❌ 带进度的PDF导出失败:', error)
+    throw error
+  }
+}
+
+/**
+ * 优化简历预览区域的样式以便PDF导出（兼容性函数）
  */
 export const optimizeForPDFExport = () => {
-  const previewElement = document.querySelector('.resume-preview')
-  if (previewElement) {
-    // 临时调整样式以优化 PDF 输出
-    previewElement.style.transform = 'none'
-    previewElement.style.boxShadow = 'none'
-    previewElement.style.border = 'none'
-  }
+  console.log('📝 pdfmake直接生成文本，无需优化HTML样式')
+  // 在pdfmake方案中，这个函数不再需要
+  // 保留是为了兼容性
 }
 
 /**
- * 恢复预览区域的正常样式
+ * 恢复预览区域的正常样式（兼容性函数）
  */
 export const restorePreviewStyles = () => {
-  const previewElement = document.querySelector('.resume-preview')
-  if (previewElement) {
-    // 恢复原始样式
-    previewElement.style.transform = ''
-    previewElement.style.boxShadow = ''
-    previewElement.style.border = ''
+  console.log('📝 pdfmake直接生成文本，无需恢复样式')
+  // 在pdfmake方案中，这个函数不再需要
+  // 保留是为了兼容性
+}
+
+/**
+ * 获取PDF生成状态信息
+ */
+export const getPDFGenerationStatus = () => {
+  return {
+    engine: 'pdfmake',
+    type: 'text-based',
+    features: [
+      '文字可选中复制',
+      '支持文本搜索',
+      '专业排版',
+      '多页自动分页',
+      '使用默认字体'
+    ],
+    isReady: pdfGenerator.isInitialized
   }
+}
+
+export default {
+  exportToPDF,
+  exportResumeAsPDF,
+  exportResumeWithProgress,
+  optimizeForPDFExport,
+  restorePreviewStyles,
+  getPDFGenerationStatus
 }

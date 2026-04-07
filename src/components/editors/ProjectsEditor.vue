@@ -49,7 +49,7 @@
             <el-input
               v-model="project.description"
               type="textarea"
-              rows="4"
+              :rows="4"
               placeholder="请描述项目内容、技术栈和您的贡献"
             />
           </el-form-item>

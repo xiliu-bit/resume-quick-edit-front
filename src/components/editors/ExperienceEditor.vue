@@ -49,7 +49,7 @@
             <el-input
               v-model="exp.description"
               type="textarea"
-              rows="4"
+              :rows="4"
               placeholder="请描述工作职责和成就"
             />
           </el-form-item>

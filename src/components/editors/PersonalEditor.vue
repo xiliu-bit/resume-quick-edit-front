@@ -21,7 +21,7 @@
         <el-input
           v-model="form.summary"
           type="textarea"
-          rows="4"
+          :rows="4"
           placeholder="请输入个人简介"
         />
       </el-form-item>

@@ -9,7 +9,22 @@
       "Bash(pkill -f \"node\")",
       "Bash(taskkill /F /IM node.exe)",
       "Bash(openspec list:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "WebSearch",
+      "WebFetch(domain:pdfmake.github.io)",
+      "Bash(npm view:*)",
+      "Bash(npm list:*)",
+      "Bash(xargs grep:*)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(chmod:*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(grep -i \"font\" src/App.vue src/components/editors/*.vue)",
+      "Bash(openspec --help)",
+      "Bash(openspec archive:*)",
+      "Bash(openspec view:*)",
+      "Bash(openspec change:*)",
+      "Bash(grep -r \"html2canvas\\\\|jsPDF\" . --include=*.md --exclude-dir=openspec/changes/archive --exclude-dir=node_modules)"
     ]
   }
 }

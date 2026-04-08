@@ -21,7 +21,7 @@
 - **状态管理**: Pinia (Vue 3 官方推荐)
 - **路由管理**: Vue Router 4
 - **构建工具**: Vite (快速启动和热更新)
-- **PDF 导出**: pdfmake (文本型PDF生成)
+- **PDF 导出**: pdfmake (文本型PDF生成，使用华文楷体)
 - **CSS 预处理器**: SCSS
 
 # 📂 目录结构规划 (AI 生成代码时请严格遵循此结构)
@@ -46,6 +46,8 @@
   - Pinia 状态管理文件（如 `resumeStore.js`）。
 - `src/utils/`:
   - 工具函数（如 `pdfExport.js` 导出逻辑）。
+- `src/assets/fonts/`:
+  - 字体资源文件（华文楷体STKAITI字体配置）。
 - `src/App.vue`:
   - 根组件。
 - `src/main.js`:
@@ -75,5 +77,5 @@
 
 1. **三栏布局**: 严格使用 `Element Plus` 的 `Container`, `Aside`, `Main`, `Header` 组件实现布局。
 2. **数据同步**: 所有编辑数据必须通过 `Pinia` 状态管理，确保中间编辑区和右侧预览区数据实时一致。
-3. **PDF 导出**: 导出功能必须封装在 `utils/pdfExport.js` 中，使用 `pdfmake` 生成文本型PDF，确保生成的PDF中的文字可以被选中、复制和搜索。
+3. **PDF 导出**: 导出功能必须封装在 `utils/pdfExport.js` 中，使用 `pdfmake` 生成文本型PDF，使用华文楷体(STKAITI)字体，确保生成的PDF中的文字可以被选中、复制和搜索。
 4. **路由配置**: 配置两个路由：`/` (Home) 和 `/editor` (ResumeEditor)。

@@ -14,7 +14,7 @@ export const PAGE_CONFIG = {
   defaultStyle: {
     fontSize: 11,
     lineHeight: 1.4,
-    font: 'Roboto'  // 默认使用Roboto，在生成时动态切换
+    font: 'STKAITI'  // 使用华文楷体
   }
 }
 

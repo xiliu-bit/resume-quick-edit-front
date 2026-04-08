@@ -28,17 +28,28 @@ class PDFLazyLoader {
     }
 
     this.isLoading = true
-    console.log('🔄 开始懒加载pdfmake...')
+    console.log('🔄 开始懒加载pdfmake（华文楷体）...')
 
     try {
       // 动态导入pdfmake
       const pdfMakeModule = await import('pdfmake/build/pdfmake')
-      const pdfFontsModule = await import('pdfmake/build/vfs_fonts')
-
       const pdfMake = pdfMakeModule.default
 
-      // 设置字体
-      pdfMake.vfs = pdfFontsModule.pdfMake ? pdfFontsModule.pdfMake.vfs : pdfFontsModule.vfs
+      // 导入自定义字体文件
+      const customFonts = await import('../assets/fonts/custom-vfs_fonts.js')
+
+      // 设置自定义vfs
+      pdfMake.vfs = customFonts.pdfMake ? customFonts.pdfMake.vfs : customFonts.vfs
+
+      // 配置华文楷体字体
+      pdfMake.fonts = {
+        STKAITI: {  // 华文楷体
+          normal: 'STKAITI.TTF',
+          bold: 'STKAITI.TTF',      // 使用同一字体文件
+          italics: 'STKAITI.TTF',   // 使用同一字体文件
+          bolditalics: 'STKAITI.TTF' // 使用同一字体文件
+        }
+      }
 
       // 保存到全局
       window.pdfMake = pdfMake
@@ -46,7 +57,7 @@ class PDFLazyLoader {
       this.isLoaded = true
       this.isLoading = false
 
-      console.log('✅ pdfmake懒加载完成')
+      console.log('✅ pdfmake懒加载完成（华文楷体）')
 
       // 通知所有等待的回调
       this.loadCallbacks.forEach(callback => callback(pdfMake))
@@ -134,7 +145,7 @@ export const generatePDFLazy = async (resumeData, options = {}) => {
       defaultStyle: {
         fontSize: 11,
         lineHeight: 1.4,
-        font: 'Roboto'
+        font: 'STKAITI'  // 使用华文楷体
       },
       ...optimizedDefinition,
       info: {
@@ -149,11 +160,12 @@ export const generatePDFLazy = async (resumeData, options = {}) => {
     // 创建PDF生成器
     const pdfDocGenerator = pdfMake.createPdf(pdfConfig)
 
-    console.log('✅ 懒加载PDF生成成功')
+    console.log('✅ 懒加载PDF生成成功（华文楷体）')
     return {
       success: true,
       generator: pdfDocGenerator,
-      lazyLoaded: true
+      lazyLoaded: true,
+      fontFamily: 'STKAITI'
     }
 
   } catch (error) {

@@ -32,7 +32,7 @@ exportToPDF 和 generateResumePDF 函数必须实现完整的 PDF 导出逻辑�
 - **THEN** 必须触发浏览器下载生成的 PDF 文件
 
 ### Requirement: PDF 导出质量
-生成的 PDF 必须是文本型而非图片型，确保文字可选中和可搜索。
+生成的 PDF 必须是文本型而非图片型，使用华文楷体字体，确保文字可选中和可搜索。
 
 #### Scenario: 导出质量验证
 - **WHEN** PDF 导出完成
@@ -40,7 +40,7 @@ exportToPDF 和 generateResumePDF 函数必须实现完整的 PDF 导出逻辑�
 - **THEN** PDF 中的文字必须可选中、可复制、可搜索
 - **THEN** PDF 内容必须清晰可读，放大不失真
 - **THEN** PDF 页面尺寸必须为 A4 格式
-- **THEN** 必须使用 Roboto 默认字体确保兼容性
+- **THEN** 必须使用华文楷体(STKAITI)字体确保中文显示效果
 
 ### Requirement: PDF 生成性能
 PDF 生成过程必须具有良好的性能表现。
@@ -48,6 +48,6 @@ PDF 生成过程必须具有良好的性能表现。
 #### Scenario: 性能验证
 - **WHEN** 生成 PDF 时
 - **THEN** 生成时间必须控制在 1-2 秒内
-- **THEN** 应用包体积必须优化（相比字体方案减少 89%）
+- **THEN** 应用包体积必须优化（使用华文楷体字体文件）
 - **THEN** 内存使用必须保持在合理范围内
 - **THEN** 必须提供生成进度提示

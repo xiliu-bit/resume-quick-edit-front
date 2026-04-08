@@ -24,7 +24,7 @@ class PDFGenerator {
     if (this.isInitialized) return
 
     try {
-      console.log('🔧 初始化PDF生成器（使用默认字体）...')
+      console.log('🔧 初始化PDF生成器（使用华文楷体）...')
 
       // 验证pdfmake是否可用
       const pdfMakeModule = await import('pdfmake/build/pdfmake')
@@ -35,7 +35,7 @@ class PDFGenerator {
       }
 
       this.isInitialized = true
-      console.log('✅ PDF生成器初始化完成（使用默认字体）')
+      console.log('✅ PDF生成器初始化完成（使用华文楷体）')
 
     } catch (error) {
       console.error('❌ PDF生成器初始化失败:', error)
@@ -47,8 +47,8 @@ class PDFGenerator {
    * 创建pdfmake实例配置
    */
   async createPDFConfig(docDefinition, options = {}) {
-    // 使用默认字体
-    const fontName = 'Roboto'
+    // 使用华文楷体
+    const fontName = 'STKAITI'
 
     const defaultConfig = {
       // 页面设置

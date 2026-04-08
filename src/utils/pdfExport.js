@@ -14,7 +14,7 @@ import { useResumeStore } from '../stores/resumeStore'
  */
 export const exportToPDF = async (element, filename = 'resume.pdf') => {
   try {
-    console.log('📄 使用pdfmake生成文本型PDF...')
+    console.log('📄 使用华文楷体生成文本型PDF...')
 
     // 获取简历数据
     const resumeStore = useResumeStore()
@@ -28,7 +28,7 @@ export const exportToPDF = async (element, filename = 'resume.pdf') => {
     if (result.success && result.generator) {
       // 下载PDF
       result.generator.download(filename)
-      console.log('✅ 文本型PDF导出成功')
+      console.log('✅ 华文楷体PDF导出成功')
       return true
     } else {
       throw new Error(result.error || 'PDF生成失败')
@@ -50,13 +50,14 @@ export const exportResumeAsPDF = async (options = {}) => {
     const result = await generateResumePDF(resumeStore, {
       title: options.filename || '简历',
       author: resumeStore.personalInfo.name || '简历快编用户',
+      fontFamily: 'STKAITI',  // 指定华文楷体
       ...options
     })
 
     if (result.success && result.generator) {
       const filename = options.filename || '简历.pdf'
       result.generator.download(filename)
-      return { success: true, filename }
+      return { success: true, filename, fontFamily: 'STKAITI' }
     } else {
       throw new Error(result.error || 'PDF生成失败')
     }
@@ -95,7 +96,7 @@ export const exportResumeWithProgress = async (onProgress, options = {}) => {
       const filename = options.filename || '简历.pdf'
       pdfDocGenerator.download(filename)
       onProgress({ stage: 'completed', progress: 100, message: 'PDF生成完成' })
-      return { success: true, filename }
+      return { success: true, filename, fontFamily: 'STKAITI' }
     } else {
       throw new Error('PDF生成器创建失败')
     }
@@ -131,12 +132,13 @@ export const getPDFGenerationStatus = () => {
   return {
     engine: 'pdfmake',
     type: 'text-based',
+    fontFamily: 'STKAITI',
     features: [
       '文字可选中复制',
       '支持文本搜索',
       '专业排版',
       '多页自动分页',
-      '使用默认字体'
+      '使用华文楷体'
     ],
     isReady: pdfGenerator.isInitialized
   }
